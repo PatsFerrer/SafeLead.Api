@@ -1,14 +1,19 @@
+using SafeLead.Api.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Limita o tamanho máximo do corpo da requisição em 10 KB (proteção contra payloads gigantes)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 10 * 1024;
+});
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddSecurityServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -16,8 +21,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+// Ativa os nossos middlewares de segurança (Helmet, CORS e Rate Limit)
+app.UseSecurityMiddlewares();
 
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
