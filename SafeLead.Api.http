@@ -1,0 +1,20 @@
+@SafeLead.Api_HostAddress = http://localhost:5035
+
+### 1. Testar Health Check (usado pelo Fly.io / Render no deploy)
+GET {{SafeLead.Api_HostAddress}}/api/health
+Accept: application/json
+
+###
+
+### 2. Testar envio de formulário (Leads) e Rate Limit
+POST {{SafeLead.Api_HostAddress}}/api/leads
+Content-Type: application/json
+
+{
+  "name": "Maria Silva",
+  "email": "maria@exemplo.com",
+  "phone": "85999999999",
+  "message": "Olá, gostaria de um orçamento para criação de site."
+}
+
+###
